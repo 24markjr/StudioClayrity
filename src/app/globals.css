@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Brand tokens — starting values from the plan. The full design system lands in Phase 2. */
+:root {
+  --color-ivory: #f7f5f0;
+  --color-soft-white: #fcfbf8;
+  --color-limestone: #e7e0d5;
+  --color-taupe: #a69a89;
+  --color-stone: #77736c;
+  --color-earth: #51443a;
+  --color-charcoal: #272622;
+  --color-line: #e5e0d7;
+}
+
+@theme inline {
+  --color-ivory: var(--color-ivory);
+  --color-soft-white: var(--color-soft-white);
+  --color-limestone: var(--color-limestone);
+  --color-taupe: var(--color-taupe);
+  --color-stone: var(--color-stone);
+  --color-earth: var(--color-earth);
+  --color-charcoal: var(--color-charcoal);
+  --color-line: var(--color-line);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans-family);
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans-family), system-ui, sans-serif;
+}
