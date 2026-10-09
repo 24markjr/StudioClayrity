@@ -10,6 +10,7 @@ import {
   orders,
   payments,
   products,
+  productVariants,
   stockReservations,
   webhookEvents,
   type AddressSnapshot,
@@ -25,7 +26,9 @@ import {
 import { nextInvoiceNumber } from "../domain/invoices";
 import { assertTransition, type OrderStatus } from "../domain/order-status";
 import { IntegrationNotConfiguredError } from "../services/errors";
+import { applyRefundUpdate, type Notification } from "../orders/lifecycle";
 import type { PaymentProvider, ProviderPayment } from "../services/payment";
+import type { ShippingProvider } from "../services/shipping";
 import { buildQuote, checkoutReadiness, loadCheckoutSettings, type Quote } from "./quote";
 import type { Address, CheckoutData } from "./schema";
 
@@ -44,6 +47,8 @@ import type { Address, CheckoutData } from "./schema";
 
 export type CheckoutDeps = {
   payment: PaymentProvider;
+  /** When Shiprocket is connected, undeliverable PIN codes are refused before payment */
+  shipping?: ShippingProvider;
   paymentsConfigured: boolean;
   appEnv: string | undefined;
   now?: () => Date;
@@ -208,6 +213,36 @@ export async function placeOrder(
       quote,
       message: "Your total has changed since you last looked. Please review it before paying.",
     };
+  }
+  if (deps.shipping?.name === "shiprocket") {
+    const weights = await db
+      .select({ id: productVariants.id, packed: productVariants.packedWeightG, net: productVariants.weightG })
+      .from(productVariants)
+      .where(
+        inArray(
+          productVariants.id,
+          quote.lines.map((l) => l.variantId),
+        ),
+      );
+    const weightG = quote.lines.reduce((sum, l) => {
+      const w = weights.find((x) => x.id === l.variantId);
+      return sum + (w?.packed ?? w?.net ?? 1000) * l.quantity;
+    }, 0);
+    try {
+      const serviceable = await deps.shipping.checkServiceability({
+        deliveryPincode: input.shipping.pincode,
+        weightG,
+        cod: input.paymentMethod === "cod",
+      });
+      if (serviceable.status === "not_serviceable") {
+        return {
+          kind: "error",
+          message: `Sorry — we can't deliver to ${input.shipping.pincode} yet. Please use another address.`,
+        };
+      }
+    } catch {
+      // Shiprocket unavailable: don't block the order; the owner confirms before dispatch
+    }
   }
   if (input.paymentMethod === "razorpay" && quote.total < 100) {
     return { kind: "error", message: "Orders under ₹1 can't be paid online." };
@@ -595,6 +630,7 @@ export async function confirmClientPayment(
 type RazorpayWebhook = {
   event: string;
   payload?: {
+    refund?: { entity?: { id: string; payment_id: string; amount: number; status: string } };
     payment?: {
       entity?: {
         id: string;
@@ -617,7 +653,12 @@ export async function handleRazorpayWebhook(
   db: Database,
   provider: PaymentProvider,
   request: { rawBody: string; signature: string | null; eventId: string | null },
-): Promise<{ status: 200 | 400 | 401; outcome?: PaymentOutcome; duplicate?: boolean }> {
+): Promise<{
+  status: 200 | 400 | 401;
+  outcome?: PaymentOutcome;
+  duplicate?: boolean;
+  notifications?: Notification[];
+}> {
   if (!request.signature || !provider.verifyWebhookSignature(request.rawBody, request.signature))
     return { status: 401 };
 
@@ -646,6 +687,8 @@ export async function handleRazorpayWebhook(
 
   const entity = body.payload?.payment?.entity;
   let outcome: PaymentOutcome = { kind: "ignored", reason: `Unhandled event ${body.event}` };
+  let notifications: Notification[] = [];
+  const refundEntity = body.payload?.refund?.entity;
   try {
     if (entity?.order_id && (body.event === "payment.captured" || body.event === "order.paid")) {
       outcome = await markPaid(
@@ -658,6 +701,12 @@ export async function handleRazorpayWebhook(
         },
         { actor: "webhook:razorpay" },
       );
+    } else if (refundEntity?.id && (body.event === "refund.processed" || body.event === "refund.failed")) {
+      notifications = await applyRefundUpdate(db, {
+        providerRefundId: refundEntity.id,
+        status: body.event === "refund.processed" ? "processed" : "failed",
+      });
+      outcome = { kind: "ignored", reason: `Refund ${refundEntity.id} ${body.event.split(".")[1]}` };
     } else if (entity?.order_id && body.event === "payment.failed") {
       outcome = await markFailed(
         db,
@@ -675,7 +724,7 @@ export async function handleRazorpayWebhook(
         .update(webhookEvents)
         .set({ processedAt: new Date(), error: null })
         .where(eq(webhookEvents.id, recordId));
-    return { status: 200, outcome };
+    return { status: 200, outcome, notifications };
   } catch (error) {
     if (recordId) {
       await db

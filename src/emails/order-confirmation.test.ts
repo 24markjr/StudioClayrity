@@ -29,7 +29,7 @@ describe("orderConfirmationEmail", () => {
       "https://studioclayrity.com",
     );
     expect(email.subject).toBe("Your Studio Clayrity order SC-7K3Q9X");
-    expect(email.text).toContain("1 × Travertine Tray (Large) — ₹7,650");
+    expect(email.text).toContain("1 × Travertine Tray (Large): ₹7,650");
     expect(email.text).toContain("Discount (SAMPLE10): − ₹850");
     expect(email.text).toContain("Total paid: ₹7,650");
     expect(email.text).toContain("Bengaluru, Karnataka 560001");

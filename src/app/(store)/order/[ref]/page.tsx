@@ -110,6 +110,14 @@ async function OrderView({ params, searchParams }: PageProps<"/order/[ref]">) {
               <>
                 <h3 className="type-overline text-stone mt-6 mb-2">Invoice</h3>
                 <p className="type-small">{order.invoiceNumber}</p>
+                {token && (
+                  <a
+                    href={`/api/orders/${order.publicRef}/invoice?t=${encodeURIComponent(token)}`}
+                    className="type-small mt-2 inline-block underline underline-offset-4"
+                  >
+                    Download GST invoice (PDF)
+                  </a>
+                )}
               </>
             )}
           </div>

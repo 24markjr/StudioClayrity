@@ -37,6 +37,12 @@ const serverSchema = z.object({
   SHIPROCKET_EMAIL: optional,
   SHIPROCKET_PASSWORD: optional,
   SHIPROCKET_WEBHOOK_TOKEN: optional,
+  /** Pickup location name exactly as set up in Shiprocket */
+  SHIPROCKET_PICKUP_LOCATION: optional,
+  SHIPROCKET_PICKUP_PINCODE: z
+    .string()
+    .regex(/^[1-9][0-9]{5}$/)
+    .optional(),
 
   // Rate limiting (Upstash Redis)
   UPSTASH_REDIS_REST_URL: z.url().optional(),

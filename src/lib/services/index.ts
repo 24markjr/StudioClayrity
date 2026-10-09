@@ -7,7 +7,7 @@ import {
   type EmailProvider,
 } from "./email";
 import { RazorpayProvider, UnconfiguredPaymentProvider, type PaymentProvider } from "./payment";
-import { ManualShippingProvider, type ShippingProvider } from "./shipping";
+import { ManualShippingProvider, ShiprocketProvider, type ShippingProvider } from "./shipping";
 import { CloudinaryStorage, UnconfiguredStorage, type StorageProvider } from "./storage";
 
 export type Services = {
@@ -50,7 +50,18 @@ export function selectServices(env: Record<string, string | undefined> = process
     payment,
     email,
     storage,
-    shipping: new ManualShippingProvider(),
+    shipping:
+      env.SHIPROCKET_EMAIL &&
+      env.SHIPROCKET_PASSWORD &&
+      env.SHIPROCKET_PICKUP_LOCATION &&
+      env.SHIPROCKET_PICKUP_PINCODE
+        ? new ShiprocketProvider({
+            email: env.SHIPROCKET_EMAIL,
+            password: env.SHIPROCKET_PASSWORD,
+            pickupLocation: env.SHIPROCKET_PICKUP_LOCATION,
+            pickupPincode: env.SHIPROCKET_PICKUP_PINCODE,
+          })
+        : new ManualShippingProvider(),
     analytics: new NoopAnalytics(),
   };
 }

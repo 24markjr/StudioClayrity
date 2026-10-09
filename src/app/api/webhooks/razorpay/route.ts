@@ -1,4 +1,4 @@
-import { afterPaymentOutcome } from "@/lib/checkout/effects";
+import { afterPaymentOutcome, sendOrderNotifications } from "@/lib/checkout/effects";
 import { handleRazorpayWebhook } from "@/lib/checkout/service";
 import { getDb } from "@/lib/db/client";
 import { getServices } from "@/lib/services";
@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     if (result.outcome)
       await afterPaymentOutcome(result.outcome).catch((error) =>
         console.error("Payment follow-up failed", error),
+      );
+    if (result.notifications?.length)
+      await sendOrderNotifications(result.notifications).catch((error) =>
+        console.error("Refund email failed", error),
       );
     return Response.json(
       { ok: result.status === 200, duplicate: result.duplicate ?? false },

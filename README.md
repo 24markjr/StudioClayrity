@@ -15,11 +15,12 @@ The full roadmap is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Client 
 | 4 — Storefront                         | Done (catalogue mode) — see [docs/STOREFRONT.md](docs/STOREFRONT.md) |
 | 5 — Bag & wishlist                     | Done — see [docs/STOREFRONT.md](docs/STOREFRONT.md)                  |
 | 6 — Checkout & payments                | Done — see [docs/CHECKOUT.md](docs/CHECKOUT.md)                      |
-| 7 — Orders, shipping, invoices & email | Next                                                                 |
+| 7 — Orders, shipping, invoices & email | Done — see [docs/SHIPPING.md](docs/SHIPPING.md)                      |
+| 8 — Admin dashboard                    | Next                                                                 |
 
 ## Stack
 
-Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion · Zod · Vitest · Playwright. Design system notes: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). PostgreSQL + Drizzle ORM, Supabase Auth, and service adapters for Razorpay, Resend, Cloudinary and (Phase 7) Shiprocket — see [docs/DATABASE.md](docs/DATABASE.md).
+Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion · Zod · Vitest · Playwright. Design system notes: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). PostgreSQL + Drizzle ORM, Supabase Auth, and service adapters for Razorpay, Resend, Cloudinary and Shiprocket — see [docs/DATABASE.md](docs/DATABASE.md).
 
 ## Requirements
 

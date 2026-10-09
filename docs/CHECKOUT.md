@@ -78,7 +78,7 @@ Without keys, online payment is simply not offered, and the webhook endpoint ans
 
 ## Emails
 
-The order confirmation is sent once per order (deduplicated in `email_deliveries`) after payment or a COD order. Without Resend keys it's logged locally with the address masked. Branded templates, shipping and refund emails come in Phase 7.
+The order confirmation is sent once per order (deduplicated in `email_deliveries`) after payment or a COD order. Without Resend keys it's logged locally with the address masked. Shipping, refund and owner emails: see [SHIPPING.md](SHIPPING.md#emails).
 
 ## Tests
 

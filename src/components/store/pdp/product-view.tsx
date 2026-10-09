@@ -16,6 +16,7 @@ import { useBagOptional } from "../bag/bag-provider";
 import { WishlistButton } from "../bag/wishlist-provider";
 import { BackInStockForm } from "../forms";
 import { StickyBuyBar } from "./sticky-buy-bar";
+import { DeliveryChecker } from "./delivery-checker";
 import { DimensionsDiagram } from "./dimensions-diagram";
 import { ProductGallery } from "./product-gallery";
 import {
@@ -32,9 +33,11 @@ type Props = {
   showSampleLabel: boolean;
   /** WhatsApp number (digits) when configured */
   whatsapp: string | null;
+  /** Show "Check delivery" (Shiprocket connected) */
+  deliveryChecker?: boolean;
 };
 
-export function ProductView({ product, showSampleLabel, whatsapp }: Props) {
+export function ProductView({ product, showSampleLabel, whatsapp, deliveryChecker = false }: Props) {
   const bag = useBagOptional();
   const buyRef = useRef<HTMLDivElement>(null);
   const [variant, setVariant] = useState<VariantDetail>(() => initialVariant(product.variants));
@@ -197,6 +200,8 @@ export function ProductView({ product, showSampleLabel, whatsapp }: Props) {
             <WishlistButton variant="inline" productId={product.id} productName={product.name} />
             <ShareButton name={product.name} />
           </div>
+
+          {deliveryChecker && available && <DeliveryChecker weightG={variant.weightG ?? 1000} />}
 
           <p className="type-caption text-stone mt-6">SKU {variant.sku}</p>
 

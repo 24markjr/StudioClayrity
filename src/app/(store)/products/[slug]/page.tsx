@@ -17,6 +17,7 @@ import {
 import type { ProductDetail } from "@/lib/catalog/types";
 import { normaliseIndianMobile } from "@/lib/domain/india";
 import { showSampleLabels } from "@/lib/features";
+import { getServices } from "@/lib/services";
 
 export async function generateStaticParams() {
   const { products } = await getStaticSlugs();
@@ -118,6 +119,7 @@ async function ProductContent({ params }: Pick<PageProps<"/products/[slug]">, "p
         product={product}
         showSampleLabel={showSampleLabels()}
         whatsapp={normaliseIndianMobile(contact.whatsapp)}
+        deliveryChecker={getServices().shipping.name === "shiprocket"}
       />
 
       <div className="mt-section-md space-y-section-sm">

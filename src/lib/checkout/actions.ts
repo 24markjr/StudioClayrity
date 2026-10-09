@@ -20,6 +20,7 @@ function deps(): service.CheckoutDeps {
   const payment = getServices().payment;
   return {
     payment,
+    shipping: getServices().shipping,
     paymentsConfigured: payment instanceof RazorpayProvider,
     appEnv: process.env.APP_ENV,
   };

@@ -122,6 +122,11 @@ export async function SiteFooter() {
           <div>
             <h2 className={columnTitle}>Help</h2>
             <ul className="mt-4 space-y-2.5">
+              <li>
+                <Link href="/track-order" className={linkClass}>
+                  Track your order
+                </Link>
+              </li>
               {policies.map((p) => (
                 <li key={p.slug}>
                   <Link href={`/policies/${p.slug}`} className={linkClass}>
