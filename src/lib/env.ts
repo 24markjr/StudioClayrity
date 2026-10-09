@@ -48,6 +48,9 @@ const serverSchema = z.object({
   // Monitoring (Sentry)
   SENTRY_DSN: z.url().optional(),
 
+  // Show /styleguide in production (pre-launch review only)
+  SHOW_STYLEGUIDE: z.enum(["true", "false"]).optional(),
+
   // Cron endpoints
   CRON_SECRET: optional,
 });

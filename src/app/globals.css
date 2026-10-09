@@ -1,15 +1,58 @@
 @import "tailwindcss";
 
-/* Brand tokens — starting values from the plan. The full design system lands in Phase 2. */
+/*
+ * Studio Clayrity design tokens.
+ * Source of truth for colour, type, spacing, layout and motion. `src/styles/tokens.test.ts`
+ * parses this file and checks every documented text/background pair for WCAG AA contrast.
+ * The storefront is intentionally light-only (brand decision); dark *sections* use the
+ * `.surface-dark` class below.
+ */
+
 :root {
-  --color-ivory: #f7f5f0;
-  --color-soft-white: #fcfbf8;
-  --color-limestone: #e7e0d5;
-  --color-taupe: #a69a89;
-  --color-stone: #77736c;
-  --color-earth: #51443a;
-  --color-charcoal: #272622;
-  --color-line: #e5e0d7;
+  /* Palette */
+  --color-ivory: #f7f5f0; /* page background */
+  --color-soft-white: #fcfbf8; /* raised surfaces, inputs */
+  --color-limestone: #e7e0d5; /* image wells, subtle fills */
+  --color-taupe: #a69a89; /* decorative lines only on light; muted text on dark */
+  --color-stone: #66625a; /* secondary text (darkened from #77736C for AA contrast) */
+  --color-earth: #51443a; /* accents, hover on links */
+  --color-charcoal: #272622; /* primary text, primary buttons, dark sections */
+  --color-line: #e5e0d7; /* hairline borders */
+  --color-line-strong: #938a7d; /* input/control borders (3:1 non-text contrast) */
+
+  /* Semantic */
+  --color-success: #3f6b4e;
+  --color-success-bg: #eef2ec;
+  --color-error: #a23b2c;
+  --color-error-bg: #f7ebe7;
+  --color-warning: #7d5813;
+  --color-warning-bg: #f6efe1;
+  --color-info: #3d5a73;
+  --color-info-bg: #ecf0f2;
+
+  /* Layout */
+  --gutter: 1rem;
+  --header-height: 4rem;
+
+  /* Motion (mirrored in src/lib/motion.ts) */
+  --duration-micro: 160ms;
+  --duration-base: 240ms;
+  --duration-overlay: 300ms;
+  --duration-reveal: 600ms;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 1.5rem;
+    --header-height: 4.5rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --gutter: 2rem;
+    --header-height: 5rem;
+  }
 }
 
 @theme inline {
@@ -21,12 +64,300 @@
   --color-earth: var(--color-earth);
   --color-charcoal: var(--color-charcoal);
   --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+  --color-success: var(--color-success);
+  --color-success-bg: var(--color-success-bg);
+  --color-error: var(--color-error);
+  --color-error-bg: var(--color-error-bg);
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-info: var(--color-info);
+  --color-info-bg: var(--color-info-bg);
+
   --font-display: var(--font-display);
-  --font-sans: var(--font-sans-family);
+  --font-sans: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+
+  --spacing-gutter: var(--gutter);
+  --spacing-header: var(--header-height);
+  --spacing-section-sm: clamp(3rem, 2rem + 4vw, 5rem);
+  --spacing-section-md: clamp(4rem, 2.5rem + 6vw, 8rem);
+  --spacing-section-lg: clamp(5rem, 3rem + 8vw, 11rem);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-body {
-  background: var(--color-ivory);
-  color: var(--color-charcoal);
-  font-family: var(--font-sans-family), system-ui, sans-serif;
+/* ---------- Typography scale ---------- */
+
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3rem, 1.9rem + 5.2vw, 6.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 1.85rem + 3vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.6rem + 1.9vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+@utility type-h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.375rem;
+  line-height: 1.3;
+}
+
+@utility type-product-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 1.5rem + 1vw, 2.5rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+@utility type-card-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+@utility type-price {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.01em;
+}
+
+@utility type-body-lg {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+@utility type-body {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+@utility type-small {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+@utility type-caption {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+@utility type-overline {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+@utility type-button {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@utility type-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Layout ---------- */
+
+@utility container-page {
+  width: 100%;
+  max-width: 90rem; /* 1440px */
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility container-wide {
+  width: 100%;
+  max-width: 105rem; /* 1680px */
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility container-prose {
+  width: 100%;
+  max-width: 42rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* 4 columns on mobile, 6 on tablet, 12 on desktop */
+@utility grid-page {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  @media (min-width: 48rem) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  @media (min-width: 64rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Dark editorial sections and the footer */
+@utility surface-dark {
+  background-color: var(--color-charcoal);
+  color: var(--color-ivory);
+  --color-stone: #a69a89;
+  --color-line: #3d3b36;
+  --color-line-strong: #57534b;
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  ::selection {
+    background: var(--color-limestone);
+    color: var(--color-charcoal);
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  /* Native dialogs: keep the page from scrolling behind an open modal */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------- Overlays (native <dialog>) ----------
+ * Enter/exit transitions using @starting-style + allow-discrete. Browsers without support
+ * simply open and close without animation.
+ */
+@layer components {
+  .sc-overlay {
+    transition:
+      opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 300ms cubic-bezier(0.65, 0, 0.35, 1),
+      overlay 300ms allow-discrete,
+      display 300ms allow-discrete;
+  }
+
+  .sc-overlay::backdrop {
+    background-color: rgb(39 38 34 / 0);
+    backdrop-filter: blur(0);
+    transition:
+      background-color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      overlay 300ms allow-discrete,
+      display 300ms allow-discrete;
+  }
+
+  .sc-overlay[open]::backdrop {
+    background-color: rgb(39 38 34 / 0.38);
+  }
+
+  @starting-style {
+    .sc-overlay[open]::backdrop {
+      background-color: rgb(39 38 34 / 0);
+    }
+  }
+
+  /* Centered dialog: fade + slight rise */
+  .sc-dialog {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .sc-dialog[open] {
+    opacity: 1;
+    transform: none;
+  }
+  @starting-style {
+    .sc-dialog[open] {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  /* Side/bottom drawer: slide */
+  .sc-drawer[data-side="right"] {
+    transform: translateX(100%);
+  }
+  .sc-drawer[data-side="left"] {
+    transform: translateX(-100%);
+  }
+  .sc-drawer[data-side="bottom"] {
+    transform: translateY(100%);
+  }
+  .sc-drawer[open] {
+    transform: none;
+  }
+  @starting-style {
+    .sc-drawer[data-side="right"][open] {
+      transform: translateX(100%);
+    }
+    .sc-drawer[data-side="left"][open] {
+      transform: translateX(-100%);
+    }
+    .sc-drawer[data-side="bottom"][open] {
+      transform: translateY(100%);
+    }
+  }
 }

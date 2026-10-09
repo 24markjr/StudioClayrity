@@ -10,11 +10,12 @@ The full roadmap is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Client 
 | ------------------------------ | --------------------------------------------------------------- |
 | 0 — Discovery & onboarding kit | Documents ready; waiting on client answers and account sign-ups |
 | 1 — Project foundation         | Done                                                            |
-| 2 — Design system              | Next                                                            |
+| 2 — Design system              | Done — review at `/styleguide` and `/styleguide/hero`           |
+| 3 — Data model & backend       | Next                                                            |
 
 ## Stack
 
-Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Zod · Vitest. Later phases add Supabase Postgres + Drizzle, Razorpay, Resend, Cloudinary and Shiprocket — see the plan.
+Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion · Zod · Vitest · Playwright. Design system notes: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). Later phases add Supabase Postgres + Drizzle, Razorpay, Resend, Cloudinary and Shiprocket — see the plan.
 
 ## Requirements
 
@@ -31,15 +32,16 @@ pnpm dev                     # http://localhost:3000
 
 ## Scripts
 
-| Command                             | What it does                                            |
-| ----------------------------------- | ------------------------------------------------------- |
-| `pnpm dev`                          | Development server                                      |
-| `pnpm build`                        | Production build (also validates environment variables) |
-| `pnpm start`                        | Serve the production build                              |
-| `pnpm lint`                         | ESLint                                                  |
-| `pnpm typecheck`                    | TypeScript, no emit                                     |
-| `pnpm test`                         | Unit tests (Vitest)                                     |
-| `pnpm format` / `pnpm format:check` | Prettier                                                |
+| Command                             | What it does                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------- |
+| `pnpm dev`                          | Development server                                                        |
+| `pnpm build`                        | Production build (also validates environment variables)                   |
+| `pnpm start`                        | Serve the production build                                                |
+| `pnpm lint`                         | ESLint                                                                    |
+| `pnpm typecheck`                    | TypeScript, no emit                                                       |
+| `pnpm test`                         | Unit tests (Vitest)                                                       |
+| `pnpm test:e2e`                     | End-to-end tests (Playwright; run `pnpm build` first — uses local Chrome) |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                  |
 
 A pre-commit hook (Husky + lint-staged) formats and lints staged files. CI (`.github/workflows/ci.yml`) runs format check, lint, typecheck, tests and build on every push and pull request.
 

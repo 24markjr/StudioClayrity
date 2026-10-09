@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { MotionProvider } from "@/components/motion/primitives";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -26,10 +29,24 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#f7f5f0",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" className={`${display.variable} ${sans.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <head>
+        <noscript>
+          {/* Without JavaScript, show content that would otherwise wait for a reveal animation */}
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
+        </noscript>
+      </head>
+      <body className="flex min-h-full flex-col">
+        <MotionProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </MotionProvider>
+      </body>
     </html>
   );
 }
