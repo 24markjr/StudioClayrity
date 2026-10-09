@@ -6,8 +6,10 @@ import {
   inventoryAdjustments,
   invoiceSequences,
   orders,
+  payments,
   productVariants,
   stockReservations,
+  webhookEvents,
 } from "../../src/lib/db/schema";
 import { generateOrderRef } from "../../src/lib/domain/identifiers";
 import {
@@ -70,6 +72,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   // Fresh stock for every test
   await db.delete(stockReservations);
+  // Payments block order deletion by design (FK restrict), so clear them first
+  await db.delete(webhookEvents);
+  await db.delete(payments);
   await db.delete(orders);
   const unique = await variantBySku("SAMPLE-BOWL-001");
   await db.update(inventory).set({ onHand: 1, reserved: 0 }).where(eq(inventory.variantId, unique.id));

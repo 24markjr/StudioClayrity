@@ -49,6 +49,14 @@ export function SearchOverlay({
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  // Close on navigation away (the hidden page must not keep the document inert)
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    return () => {
+      if (dialog?.open) dialog.close();
+    };
+  }, []);
+
   useEffect(() => {
     const term = query.trim();
     if (term.length < 2) return;

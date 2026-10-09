@@ -138,6 +138,14 @@ function Lightbox({
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  // Close on navigation away (the hidden page must not keep the document inert)
+  useEffect(() => {
+    const dialog = ref.current;
+    return () => {
+      if (dialog?.open) dialog.close();
+    };
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {

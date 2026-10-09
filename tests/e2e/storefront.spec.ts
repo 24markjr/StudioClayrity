@@ -71,10 +71,10 @@ test("shows an empty state when nothing matches", async ({ page }) => {
 
 test("choosing a variant updates price and SKU", async ({ page }) => {
   await page.goto("/products/travertine-tray");
-  await expect(page.getByText("SKU SAMPLE-TRAY-001-S")).toBeVisible();
+  await expect(page.getByRole("main").getByText("SKU SAMPLE-TRAY-001-S")).toBeVisible();
   await page.getByRole("radio", { name: "Large" }).click();
   await expect(page.getByRole("radio", { name: "Large" })).toHaveAttribute("aria-checked", "true");
-  await expect(page.getByText("SKU SAMPLE-TRAY-001-L")).toBeVisible();
+  await expect(page.getByRole("main").getByText("SKU SAMPLE-TRAY-001-L")).toBeVisible();
   await expect(page.getByText("₹8,500").first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Add to bag" }).first()).toBeEnabled();
 });

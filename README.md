@@ -6,15 +6,16 @@ The full roadmap is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Client 
 
 ## Status
 
-| Phase                          | State                                                                |
-| ------------------------------ | -------------------------------------------------------------------- |
-| 0 — Discovery & onboarding kit | Documents ready; waiting on client answers and account sign-ups      |
-| 1 — Project foundation         | Done                                                                 |
-| 2 — Design system              | Done — review at `/styleguide` and `/styleguide/hero`                |
-| 3 — Data model & backend       | Done — see [docs/DATABASE.md](docs/DATABASE.md)                      |
-| 4 — Storefront                 | Done (catalogue mode) — see [docs/STOREFRONT.md](docs/STOREFRONT.md) |
-| 5 — Bag & wishlist             | Done — see [docs/STOREFRONT.md](docs/STOREFRONT.md)                  |
-| 6 — Checkout & payments        | Next                                                                 |
+| Phase                                  | State                                                                |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| 0 — Discovery & onboarding kit         | Documents ready; waiting on client answers and account sign-ups      |
+| 1 — Project foundation                 | Done                                                                 |
+| 2 — Design system                      | Done — review at `/styleguide` and `/styleguide/hero`                |
+| 3 — Data model & backend               | Done — see [docs/DATABASE.md](docs/DATABASE.md)                      |
+| 4 — Storefront                         | Done (catalogue mode) — see [docs/STOREFRONT.md](docs/STOREFRONT.md) |
+| 5 — Bag & wishlist                     | Done — see [docs/STOREFRONT.md](docs/STOREFRONT.md)                  |
+| 6 — Checkout & payments                | Done — see [docs/CHECKOUT.md](docs/CHECKOUT.md)                      |
+| 7 — Orders, shipping, invoices & email | Next                                                                 |
 
 ## Stack
 

@@ -13,7 +13,7 @@
  */
 export const features = {
   bag: true,
-  checkout: false,
+  checkout: true,
   wishlist: true,
   accounts: false,
   enquiries: false,

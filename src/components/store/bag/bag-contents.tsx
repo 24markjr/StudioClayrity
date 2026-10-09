@@ -276,7 +276,7 @@ export function BagExtras() {
 
 /** Totals and the checkout button (pinned at the bottom of the drawer). */
 export function BagTotals({ checkoutEnabled }: { checkoutEnabled: boolean }) {
-  const { bag } = useBag();
+  const { bag, setOpen } = useBag();
   const shipping = bag.shipping;
   return (
     <div className="space-y-4">
@@ -314,7 +314,7 @@ export function BagTotals({ checkoutEnabled }: { checkoutEnabled: boolean }) {
         </p>
       )}
       {checkoutEnabled ? (
-        <ButtonLink href="/checkout" size="lg" fullWidth>
+        <ButtonLink href="/checkout" size="lg" fullWidth onClick={() => setOpen(false)}>
           Checkout
         </ButtonLink>
       ) : (

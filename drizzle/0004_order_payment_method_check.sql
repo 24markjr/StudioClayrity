@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ADD CONSTRAINT "orders_payment_method" CHECK ("orders"."payment_method" IN ('razorpay', 'cod'));

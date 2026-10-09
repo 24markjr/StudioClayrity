@@ -19,7 +19,9 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "admin:grant": "tsx scripts/grant-admin.ts"
+    "admin:grant": "tsx scripts/grant-admin.ts",
+    "settings:get": "tsx scripts/set-setting.ts get",
+    "settings:set": "tsx scripts/set-setting.ts set"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

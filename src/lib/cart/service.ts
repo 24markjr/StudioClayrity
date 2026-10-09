@@ -322,8 +322,10 @@ export async function buildBagView(
   let coupon: BagView["coupon"] = null;
   if (cart.couponId) {
     const evaluated = await evaluateCartCoupon(db, cart.couponId, buyable, subtotal);
-    if (evaluated.ok) coupon = evaluated.coupon;
-    else {
+    if (evaluated.ok) {
+      const { code, discount, description } = evaluated.coupon;
+      coupon = { code, discount, description };
+    } else {
       await removeCoupon(db, cart.id);
       notices.push({ kind: "coupon_removed", message: evaluated.message });
     }
@@ -357,11 +359,23 @@ export async function buildBagView(
   };
 }
 
-async function evaluateCartCoupon(db: Executor, couponId: string, lines: BagLine[], subtotal: number) {
+/**
+ * Evaluate a coupon against bag lines. Without an email (the bag) per-customer limits are
+ * skipped; checkout passes the email so they apply. `eligibleProductIds` is null when the
+ * coupon applies to everything.
+ */
+export async function evaluateCartCoupon(
+  db: Executor,
+  couponId: string,
+  lines: Pick<BagLine, "productId" | "lineTotal">[],
+  subtotal: number,
+  options: { email?: string } = {},
+) {
   const [c] = await db.select().from(coupons).where(eq(coupons.id, couponId));
   if (!c) return { ok: false as const, message: "That code is no longer available." };
 
   let eligibleSubtotal = subtotal;
+  let eligibleProductIds: Set<string> | null = null;
   if (c.scope !== "all") {
     const productIds = lines.map((l) => l.productId);
     const eligible = new Set<string>();
@@ -385,12 +399,26 @@ async function evaluateCartCoupon(db: Executor, couponId: string, lines: BagLine
       for (const r of rows) eligible.add(r.productId);
     }
     eligibleSubtotal = lines.filter((l) => eligible.has(l.productId)).reduce((s, l) => s + l.lineTotal, 0);
+    eligibleProductIds = eligible;
   }
 
   const [{ used }] = await db
     .select({ used: count() })
     .from(couponRedemptions)
     .where(eq(couponRedemptions.couponId, c.id));
+  let usedByCustomer = 0;
+  if (options.email && c.perCustomerLimit !== null) {
+    const [row] = await db
+      .select({ used: count() })
+      .from(couponRedemptions)
+      .where(
+        and(
+          eq(couponRedemptions.couponId, c.id),
+          eq(sql`lower(${couponRedemptions.email})`, options.email.toLowerCase()),
+        ),
+      );
+    usedByCustomer = row.used;
+  }
   const result = evaluateCoupon(
     {
       code: c.code,
@@ -401,11 +429,17 @@ async function evaluateCartCoupon(db: Executor, couponId: string, lines: BagLine
       startsAt: c.startsAt,
       endsAt: c.endsAt,
       usageLimit: c.usageLimit,
-      // Per-customer limits need the shopper's email, so they're checked at checkout
-      perCustomerLimit: null,
+      // Per-customer limits need the shopper's email, so only checkout applies them
+      perCustomerLimit: options.email ? c.perCustomerLimit : null,
       isActive: c.isActive,
     },
-    { eligibleSubtotal, orderSubtotal: subtotal, now: new Date(), timesUsed: used, timesUsedByCustomer: 0 },
+    {
+      eligibleSubtotal,
+      orderSubtotal: subtotal,
+      now: new Date(),
+      timesUsed: used,
+      timesUsedByCustomer: usedByCustomer,
+    },
   );
   if (!result.ok) {
     const message =
@@ -416,7 +450,8 @@ async function evaluateCartCoupon(db: Executor, couponId: string, lines: BagLine
   }
   return {
     ok: true as const,
-    coupon: { code: c.code, discount: result.discount, description: c.description },
+    coupon: { id: c.id, code: c.code, discount: result.discount, description: c.description },
+    eligibleProductIds,
   };
 }
 

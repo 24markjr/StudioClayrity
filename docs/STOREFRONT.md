@@ -36,7 +36,7 @@ Stock on listing and product pages may be up to a few minutes old. The bag and c
 | Flag        | Phase | State | While off                                                                                           |
 | ----------- | ----- | ----- | --------------------------------------------------------------------------------------------------- |
 | `bag`       | 5     | on    | "Add to bag" disabled with "Online ordering opens soon"                                             |
-| `checkout`  | 6     | off   | The bag shows a disabled Checkout button: "Checkout opens soon. Your bag will be kept for 30 days." |
+| `checkout`  | 6     | on    | The bag shows a disabled Checkout button: "Checkout opens soon. Your bag will be kept for 30 days." |
 | `wishlist`  | 5     | on    | No hearts, no /wishlist                                                                             |
 | `accounts`  | 9     | off   | No account icon                                                                                     |
 | `enquiries` | 10    | off   | No bespoke section, no "request photos / video viewing"                                             |

@@ -38,6 +38,12 @@ function useNativeDialog(open: boolean, onClose: () => void) {
     return () => {
       dialog.removeEventListener("close", handleClose);
       dialog.removeEventListener("click", handleClick);
+      // Navigating away keeps the old page alive but hidden. An open modal would leave the
+      // new page inert (unclickable), so close it and tell the owner.
+      if (dialog.open) {
+        dialog.close();
+        onCloseRef.current();
+      }
     };
   }, []);
 

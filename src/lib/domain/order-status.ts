@@ -29,8 +29,9 @@ const transitions: Record<OrderStatus, readonly OrderStatus[]> = {
   pending_payment: ["paid", "payment_failed", "expired", "cancelled", "confirmed_cod"],
   // A failed attempt can be retried on the same order
   payment_failed: ["pending_payment", "paid", "expired", "cancelled"],
-  // A payment captured after expiry is still recorded (then refunded if stock is gone)
-  expired: ["paid"],
+  // A payment captured after expiry is still recorded (then refunded if stock is gone);
+  // the customer may also retry, which re-holds stock if it's still there
+  expired: ["paid", "pending_payment"],
   paid: ["processing", "cancel_requested", "cancelled", "refund_pending"],
   confirmed_cod: ["processing", "cancel_requested", "cancelled"],
   processing: ["packed", "cancel_requested", "cancelled", "refund_pending"],

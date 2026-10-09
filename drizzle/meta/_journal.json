@@ -22,6 +22,20 @@
       "when": 1791546523773,
       "tag": "0002_security_and_search",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791562757935,
+      "tag": "0003_order_cart_and_method",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791562770481,
+      "tag": "0004_order_payment_method_check",
+      "breakpoints": true
     }
   ]
 }

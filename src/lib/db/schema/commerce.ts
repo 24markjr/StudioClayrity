@@ -186,6 +186,10 @@ export const orders = pgTable(
     /** Prevents duplicate orders from double submits */
     idempotencyKey: text("idempotency_key").unique(),
     userId: uuid("user_id").references(() => profiles.id, { onDelete: "set null" }),
+    /** The bag this order came from — emptied once the order is paid or confirmed */
+    cartId: uuid("cart_id").references(() => carts.id, { onDelete: "set null" }),
+    /** "razorpay" or "cod" — what the customer chose at checkout */
+    paymentMethod: text("payment_method").notNull().default("razorpay"),
     email: text("email").notNull(),
     phone: text("phone").notNull(),
     status: orderStatus("status").notNull().default("pending_payment"),
@@ -234,6 +238,7 @@ export const orders = pgTable(
       sql`${t.total} = ${t.subtotal} - ${t.discountTotal} + ${t.shippingTotal} + ${t.giftWrapTotal} + ${t.codFee}`,
     ),
     check("orders_tax_split", sql`${t.taxTotal} = ${t.cgst} + ${t.sgst} + ${t.igst}`),
+    check("orders_payment_method", sql`${t.paymentMethod} IN ('razorpay', 'cod')`),
     check("orders_gst_exclusive_split", sql`${t.igst} = 0 OR (${t.cgst} = 0 AND ${t.sgst} = 0)`),
     index("orders_user_idx").on(t.userId),
     index("orders_status_idx").on(t.status, t.placedAt),
