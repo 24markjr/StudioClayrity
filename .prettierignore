@@ -3,3 +3,4 @@ node_modules
 pnpm-lock.yaml
 next-env.d.ts
 docs/phase-0/product-template.csv
+drizzle/meta

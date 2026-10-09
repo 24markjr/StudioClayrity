@@ -11,11 +11,12 @@ The full roadmap is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Client 
 | 0 — Discovery & onboarding kit | Documents ready; waiting on client answers and account sign-ups |
 | 1 — Project foundation         | Done                                                            |
 | 2 — Design system              | Done — review at `/styleguide` and `/styleguide/hero`           |
-| 3 — Data model & backend       | Next                                                            |
+| 3 — Data model & backend       | Done — see [docs/DATABASE.md](docs/DATABASE.md)                 |
+| 4 — Storefront                 | Next                                                            |
 
 ## Stack
 
-Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion · Zod · Vitest · Playwright. Design system notes: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). Later phases add Supabase Postgres + Drizzle, Razorpay, Resend, Cloudinary and Shiprocket — see the plan.
+Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion · Zod · Vitest · Playwright. Design system notes: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). PostgreSQL + Drizzle ORM, Supabase Auth, and service adapters for Razorpay, Resend, Cloudinary and (Phase 7) Shiprocket — see [docs/DATABASE.md](docs/DATABASE.md).
 
 ## Requirements
 
@@ -26,8 +27,10 @@ Next.js (App Router) · React · TypeScript (strict) · Tailwind CSS · Motion �
 
 ```bash
 pnpm install
-cp .env.example .env.local   # fill in what you have; everything is optional locally
-pnpm dev                     # http://localhost:3000
+docker compose up -d          # local Postgres (or point DATABASE_URL at any Postgres)
+cp .env.example .env.local    # set DATABASE_URL and TEST_DATABASE_URL
+pnpm db:migrate && pnpm db:seed
+pnpm dev                      # http://localhost:3000
 ```
 
 ## Scripts
