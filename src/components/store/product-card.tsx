@@ -13,10 +13,12 @@ export function ProductCard({
   name,
   price,
   compareAt,
+  pricePrefix,
   status,
   image,
   hoverImage,
   action,
+  imageTag,
   className,
 }: {
   href: string;
@@ -24,12 +26,16 @@ export function ProductCard({
   /** Minor units (paise) */
   price: number;
   compareAt?: number | null;
+  /** e.g. "From" when variants are priced differently */
+  pricePrefix?: string;
   /** e.g. "One of a kind", "Made to order · 3 weeks", "Sold" */
   status?: string;
   image: ReactNode;
   hoverImage?: ReactNode;
   /** Small control in the image corner, e.g. a wishlist button (must be its own focusable element) */
   action?: ReactNode;
+  /** Small label in the bottom corner of the image, e.g. "Sample" */
+  imageTag?: ReactNode;
   className?: string;
 }) {
   return (
@@ -46,12 +52,13 @@ export function ProductCard({
         {status && (
           <Badge
             tone={status.toLowerCase() === "sold" ? "dark" : "neutral"}
-            className="absolute top-3 left-3 z-10"
+            className="absolute top-3 left-3 z-10 max-w-[calc(100%-1.5rem)] leading-snug whitespace-normal"
           >
             {status}
           </Badge>
         )}
         {action && <div className="absolute top-2 right-2 z-20">{action}</div>}
+        {imageTag && <div className="absolute right-3 bottom-3 z-10">{imageTag}</div>}
       </div>
       <div className="mt-4 flex flex-col gap-1.5">
         <h3 className="type-card-title">
@@ -63,7 +70,7 @@ export function ProductCard({
             {name}
           </Link>
         </h3>
-        <Price amount={price} compareAt={compareAt} className="text-stone" />
+        <Price amount={price} compareAt={compareAt} prefix={pricePrefix} className="text-stone" />
       </div>
     </article>
   );

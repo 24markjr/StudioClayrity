@@ -16,6 +16,7 @@ import {
   inventory,
   inventoryAdjustments,
   orders,
+  pages,
   productImages,
   products,
   productVariants,
@@ -25,7 +26,7 @@ import {
 import { settingDefaults, type SettingKey } from "../src/lib/domain/settings";
 import { rupeesToPaise } from "../src/lib/utils/money";
 import { loadLocalEnv } from "./load-env";
-import { sampleCategories, sampleCollections, sampleCoupons, sampleProducts } from "./seed-data";
+import { sampleCategories, sampleCollections, sampleCoupons, samplePages, sampleProducts } from "./seed-data";
 
 /** Fixed id so tests and local tools can refer to the development admin. */
 export const DEV_ADMIN_ID = "00000000-0000-4000-8000-000000000001";
@@ -186,6 +187,12 @@ export async function seed(db: Database, options: { appEnv?: string } = {}) {
       })
       .onConflictDoNothing();
   });
+
+  // Draft pages: created once, never overwritten (the owner edits them in the admin)
+  await db
+    .insert(pages)
+    .values(samplePages.map((p) => ({ ...p, status: "published" as const, isApproved: false })))
+    .onConflictDoNothing();
 
   // Store settings: create defaults where missing, never overwrite edited values
   await db

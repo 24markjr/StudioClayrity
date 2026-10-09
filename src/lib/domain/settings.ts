@@ -10,6 +10,45 @@ import { storeSettings } from "../db/schema";
 
 const paise = z.number().int().nonnegative();
 
+const link = z.object({ label: z.string().min(1).max(40), href: z.string().min(1) });
+/** `placeholder:<tone>` or `cld:<public id>` */
+const imageRef = z.string().min(1);
+
+/** Editable homepage copy and imagery (admin, Phase 8). */
+const homepageSchema = z.object({
+  hero: z.object({
+    eyebrow: z.string().max(40),
+    headline: z.string().min(1).max(80),
+    body: z.string().max(240),
+    primary: link,
+    secondary: link.nullable(),
+    image: imageRef,
+    imageAlt: z.string().min(1),
+    detailImage: imageRef.nullable(),
+    detailImageAlt: z.string(),
+    caption: z.string().max(120),
+  }),
+  philosophy: z.object({ eyebrow: z.string().max(40), statement: z.string().min(1).max(240) }),
+  material: z.object({
+    title: z.string().min(1).max(60),
+    image: imageRef,
+    imageAlt: z.string().min(1),
+    notes: z.array(z.object({ title: z.string().min(1).max(40), body: z.string().max(200) })).max(3),
+  }),
+  editorial: z.object({
+    title: z.string().min(1).max(60),
+    image: imageRef,
+    imageAlt: z.string().min(1),
+    /** Product hotspots on the image; x/y are percentages from the top-left */
+    hotspots: z
+      .array(
+        z.object({ productSlug: z.string(), x: z.number().min(0).max(100), y: z.number().min(0).max(100) }),
+      )
+      .max(4),
+  }),
+  newsletter: z.object({ title: z.string().min(1).max(60), body: z.string().max(200) }),
+});
+
 export const settingsSchemas = {
   announcement: z.object({
     enabled: z.boolean(),
@@ -52,6 +91,7 @@ export const settingsSchemas = {
     /** Minutes stock is held while the customer pays */
     reservationMinutes: z.number().int().min(5).max(60),
   }),
+  homepage: homepageSchema,
 } as const;
 
 export type SettingKey = keyof typeof settingsSchemas;
@@ -78,6 +118,51 @@ export const settingDefaults: { [K in SettingKey]: SettingValue<K> } = {
   cod: { enabled: false, maxOrderTotal: 0, fee: 0 },
   gifting: { wrapEnabled: false, wrapPrice: 0 },
   checkout: { reservationMinutes: 15 },
+  // Illustrative defaults, replaced with the owner's own copy and photography in the admin
+  homepage: {
+    hero: {
+      eyebrow: "The Stone Edit",
+      headline: "Objects shaped by stone and time",
+      body: "Decor pieces in natural stone, each with a surface of its own. Made to be kept.",
+      primary: { label: "Explore the collection", href: "/shop" },
+      secondary: { label: "Our story", href: "/about" },
+      image: "placeholder:white-marble",
+      imageAlt: "Placeholder: a stone bowl on a console in window light",
+      detailImage: "placeholder:green-marble",
+      detailImageAlt: "Placeholder: close-up of green marble veining",
+      caption: "Natural stone: veining and tone vary from piece to piece.",
+    },
+    philosophy: {
+      eyebrow: "Philosophy",
+      statement: "Fewer, better things. Pieces chosen for the way light moves across their surface.",
+    },
+    material: {
+      title: "Material, up close",
+      image: "placeholder:travertine",
+      imageAlt: "Placeholder: close-up of travertine texture",
+      notes: [
+        { title: "Veining", body: "Every block carries its own pattern, so no two pieces are identical." },
+        {
+          title: "Finish",
+          body: "Honed surfaces are soft and matte; polished surfaces deepen colour and reflect light.",
+        },
+        {
+          title: "Weight",
+          body: "Stone is dense. The weight of every piece is listed so you know what to expect.",
+        },
+      ],
+    },
+    editorial: {
+      title: "In the room",
+      image: "placeholder:charcoal-stone",
+      imageAlt: "Placeholder: stone objects arranged on a shelf",
+      hotspots: [],
+    },
+    newsletter: {
+      title: "Letters from the studio",
+      body: "New pieces and the occasional note on caring for stone. A few emails a year.",
+    },
+  },
 };
 
 /** Read a setting; falls back to the default if missing or invalid (and never throws). */

@@ -72,9 +72,12 @@ export function Price({
   compareAt,
   className,
   size = "md",
+  prefix,
 }: {
   amount: number;
   compareAt?: number | null;
+  /** e.g. "From" */
+  prefix?: string;
   className?: string;
   size?: "md" | "lg";
 }) {
@@ -88,7 +91,10 @@ export function Price({
       )}
     >
       {onSale && <VisuallyHidden>Sale price</VisuallyHidden>}
-      <span>{formatMoney(amount)}</span>
+      <span>
+        {prefix && <span className="mr-1.5">{prefix}</span>}
+        {formatMoney(amount)}
+      </span>
       {onSale && (
         <>
           <VisuallyHidden>Original price</VisuallyHidden>

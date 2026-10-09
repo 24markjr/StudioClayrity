@@ -346,6 +346,9 @@
   .sc-drawer[data-side="bottom"] {
     transform: translateY(100%);
   }
+  .sc-drawer[data-side="top"] {
+    transform: translateY(-100%);
+  }
   .sc-drawer[open] {
     transform: none;
   }
@@ -358,6 +361,9 @@
     }
     .sc-drawer[data-side="bottom"][open] {
       transform: translateY(100%);
+    }
+    .sc-drawer[data-side="top"][open] {
+      transform: translateY(-100%);
     }
   }
 }

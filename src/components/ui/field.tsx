@@ -191,7 +191,7 @@ export function Checkbox({
         </svg>
       </span>
       <span>
-        <label htmlFor={fieldId} className="type-small text-charcoal cursor-pointer">
+        <label htmlFor={fieldId} className="type-small cursor-pointer">
           {label}
         </label>
         {hint && (

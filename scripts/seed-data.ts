@@ -312,3 +312,95 @@ export const sampleCoupons = [
   { code: "SAMPLE10", type: "percent" as const, value: 1000, minOrderTotal: 500_000, maxDiscount: 300_000 },
   { code: "SAMPLE500", type: "fixed" as const, value: 50_000, minOrderTotal: 1_000_000, maxDiscount: null },
 ];
+
+/**
+ * Draft pages. Policies are placeholders that state what each page will cover — they make
+ * no commitments. They stay marked "Pending owner approval" until approved in the admin.
+ */
+const pendingNote = "*This page is a draft. Studio Clayrity will confirm the final terms before launch.*";
+
+export const samplePages = [
+  {
+    slug: "about",
+    title: "Our story",
+    body: `${pendingNote}
+
+# The studio
+
+This page will introduce Studio Clayrity in the owner's own words: who is behind the studio, what draws them to stone and clay, and how pieces are chosen.
+
+# How we work
+
+A short description of the design approach and the materials the studio works with. Only details the studio can verify will be published here.
+
+[Explore the collection](/shop)`,
+  },
+  {
+    slug: "shipping",
+    title: "Shipping policy",
+    body: `${pendingNote}
+
+# What this policy will cover
+
+- Where we deliver and how long dispatch takes
+- Shipping charges, including any free-shipping threshold
+- How fragile pieces are packed and whether shipments are insured
+- What to do if a parcel arrives damaged`,
+  },
+  {
+    slug: "returns",
+    title: "Returns and refunds",
+    body: `${pendingNote}
+
+# What this policy will cover
+
+- Which items can be returned, and within how many days
+- How to report breakage in transit (including any photo or unboxing-video requirement)
+- Whether made-to-order and custom pieces can be returned
+- How and when refunds are paid`,
+  },
+  {
+    slug: "cancellation",
+    title: "Cancellation policy",
+    body: `${pendingNote}
+
+# What this policy will cover
+
+- Until when an order can be cancelled
+- How to request a cancellation
+- Refund timelines for cancelled orders`,
+  },
+  {
+    slug: "privacy",
+    title: "Privacy policy",
+    body: `${pendingNote}
+
+# What this policy will cover
+
+- What personal information we collect and why
+- How it is stored and protected, and who it is shared with (for example, payment and delivery partners)
+- Your rights to access, correct and delete your data
+- How to contact us about privacy`,
+  },
+  {
+    slug: "terms",
+    title: "Terms and conditions",
+    body: `${pendingNote}
+
+# What this page will cover
+
+- The terms on which products are sold through this website
+- Pricing, taxes and payment
+- Liability and governing law`,
+  },
+  {
+    slug: "cookies",
+    title: "Cookie policy",
+    body: `${pendingNote}
+
+# What this policy will cover
+
+- The cookies this website uses (for example, to keep your bag and sign-in working)
+- Any analytics cookies, and how to accept or decline them`,
+  },
+];
