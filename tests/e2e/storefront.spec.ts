@@ -76,9 +76,7 @@ test("choosing a variant updates price and SKU", async ({ page }) => {
   await expect(page.getByRole("radio", { name: "Large" })).toHaveAttribute("aria-checked", "true");
   await expect(page.getByText("SKU SAMPLE-TRAY-001-L")).toBeVisible();
   await expect(page.getByText("₹8,500").first()).toBeVisible();
-  // Catalogue mode: ordering is clearly not available yet
-  await expect(page.getByRole("button", { name: "Add to bag" })).toBeDisabled();
-  await expect(page.getByText("Online ordering opens soon.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Add to bag" }).first()).toBeEnabled();
 });
 
 test("product details expand, and structured data is present", async ({ page }) => {
@@ -92,7 +90,7 @@ test("product details expand, and structured data is present", async ({ page }) 
 
 test("sold-out pieces offer a back-in-stock email", async ({ page }) => {
   await page.goto("/products/bianco-bookends");
-  await expect(page.getByText("Currently sold out.")).toBeVisible();
+  await expect(page.getByRole("main").getByText("Currently sold out.")).toBeVisible();
   const email = page.getByRole("textbox", { name: "Email address" }).first();
   await email.fill("not-an-email");
   await page.getByRole("button", { name: "Notify me" }).click();

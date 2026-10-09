@@ -557,3 +557,16 @@ export async function getStaticSlugs(db: Executor) {
     categories: k.map((r) => r.slug),
   };
 }
+
+/** Cards for specific products in the given order (wishlist). Unpublished ones are skipped. */
+export async function getProductsByIds(db: Executor, ids: string[]) {
+  if (ids.length === 0) return [];
+  const cards = await cardsWhere(
+    db,
+    and(published, inArray(products.id, ids)),
+    [asc(products.name)],
+    ids.length,
+  );
+  const byId = new Map(cards.map((c) => [c.id, c]));
+  return ids.map((id) => byId.get(id)).filter((c): c is CardProduct => Boolean(c));
+}

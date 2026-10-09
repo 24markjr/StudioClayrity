@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { FadeSwap } from "@/components/motion/primitives";
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,10 @@ import { useToast } from "@/components/ui/toast";
 import { Markdown } from "@/lib/content/markdown";
 import { statusLabel, type ProductDetail, type VariantDetail } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils/cn";
+import { useBagOptional } from "../bag/bag-provider";
+import { WishlistButton } from "../bag/wishlist-provider";
 import { BackInStockForm } from "../forms";
+import { StickyBuyBar } from "./sticky-buy-bar";
 import { DimensionsDiagram } from "./dimensions-diagram";
 import { ProductGallery } from "./product-gallery";
 import {
@@ -26,13 +29,14 @@ import {
 
 type Props = {
   product: ProductDetail;
-  orderingEnabled: boolean;
   showSampleLabel: boolean;
   /** WhatsApp number (digits) when configured */
   whatsapp: string | null;
 };
 
-export function ProductView({ product, orderingEnabled, showSampleLabel, whatsapp }: Props) {
+export function ProductView({ product, showSampleLabel, whatsapp }: Props) {
+  const bag = useBagOptional();
+  const buyRef = useRef<HTMLDivElement>(null);
   const [variant, setVariant] = useState<VariantDetail>(() => initialVariant(product.variants));
   const [quantity, setQuantity] = useState(1);
   const names = optionNames(product.variants);
@@ -148,16 +152,22 @@ export function ProductView({ product, orderingEnabled, showSampleLabel, whatsap
 
           {/* Purchase */}
           {available ? (
-            <div className="mt-6 space-y-4">
+            <div ref={buyRef} className="mt-6 space-y-4">
               <div className="flex items-stretch gap-3">
                 {maxQuantity > 1 && (
                   <QuantityStepper value={quantity} onChange={setQuantity} max={maxQuantity} />
                 )}
-                <Button size="lg" className="flex-1" disabled={!orderingEnabled}>
+                <Button
+                  size="lg"
+                  className="flex-1"
+                  disabled={!bag}
+                  loading={bag?.adding === variant.id}
+                  onClick={() => bag?.add(variant.id, quantity)}
+                >
                   Add to bag
                 </Button>
               </div>
-              {!orderingEnabled && (
+              {!bag && (
                 <p className="type-small text-stone">
                   Online ordering opens soon.
                   {whatsappHref ? " In the meantime, ask us about this piece on WhatsApp." : ""}
@@ -184,6 +194,7 @@ export function ProductView({ product, orderingEnabled, showSampleLabel, whatsap
                 <WhatsAppIcon className="size-4" /> Ask on WhatsApp
               </a>
             )}
+            <WishlistButton variant="inline" productId={product.id} productName={product.name} />
             <ShareButton name={product.name} />
           </div>
 
@@ -192,6 +203,16 @@ export function ProductView({ product, orderingEnabled, showSampleLabel, whatsap
           <ProductDetails product={product} variant={variant} />
         </div>
       </div>
+
+      {bag && available && (
+        <StickyBuyBar
+          target={buyRef}
+          name={product.name}
+          price={variant.price}
+          loading={bag.adding === variant.id}
+          onAdd={() => bag.add(variant.id, quantity)}
+        />
+      )}
     </div>
   );
 }

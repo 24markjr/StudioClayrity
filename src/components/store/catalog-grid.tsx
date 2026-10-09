@@ -1,14 +1,24 @@
 import { Badge } from "@/components/ui/display";
 import { Skeleton } from "@/components/ui/display";
 import { statusLabel, type CardProduct } from "@/lib/catalog/types";
-import { showSampleLabels } from "@/lib/features";
+import { features, showSampleLabels } from "@/lib/features";
+import { WishlistButton } from "./bag/wishlist-provider";
 import { cn } from "@/lib/utils/cn";
 import { CatalogImage } from "./catalog-image";
 import { ProductCard } from "./product-card";
 
 export const GRID_SIZES = "(min-width: 80rem) 22vw, (min-width: 64rem) 30vw, (min-width: 48rem) 33vw, 50vw";
 
-export function CatalogCard({ product, priority }: { product: CardProduct; priority?: boolean }) {
+export function CatalogCard({
+  product,
+  priority,
+  sampleLabels = showSampleLabels(),
+}: {
+  product: CardProduct;
+  priority?: boolean;
+  /** Pass explicitly when rendering in the browser, where APP_ENV isn't available */
+  sampleLabels?: boolean;
+}) {
   const [hero, hover] = product.images;
   const status = statusLabel(product);
   return (
@@ -29,8 +39,11 @@ export function CatalogCard({ product, priority }: { product: CardProduct; prior
           />
         }
         hoverImage={hover ? <CatalogImage src={hover.src} alt="" sizes={GRID_SIZES} /> : undefined}
+        action={
+          features.wishlist ? <WishlistButton productId={product.id} productName={product.name} /> : undefined
+        }
         imageTag={
-          product.isSample && showSampleLabels() ? (
+          product.isSample && sampleLabels ? (
             <Badge tone="outline" className="bg-ivory/90">
               Sample
             </Badge>
@@ -45,9 +58,11 @@ export function CatalogGrid({
   products,
   className,
   priorityCount = 0,
+  sampleLabels,
 }: {
   products: CardProduct[];
   className?: string;
+  sampleLabels?: boolean;
   /** Load the first N images eagerly (above the fold) */
   priorityCount?: number;
 }) {
@@ -60,7 +75,7 @@ export function CatalogGrid({
     >
       {products.map((product, i) => (
         <li key={product.id}>
-          <CatalogCard product={product} priority={i < priorityCount} />
+          <CatalogCard product={product} priority={i < priorityCount} sampleLabels={sampleLabels} />
         </li>
       ))}
     </ul>

@@ -16,7 +16,7 @@ import {
 } from "@/lib/catalog/data";
 import type { ProductDetail } from "@/lib/catalog/types";
 import { normaliseIndianMobile } from "@/lib/domain/india";
-import { features, showSampleLabels } from "@/lib/features";
+import { showSampleLabels } from "@/lib/features";
 
 export async function generateStaticParams() {
   const { products } = await getStaticSlugs();
@@ -116,7 +116,6 @@ async function ProductContent({ params }: Pick<PageProps<"/products/[slug]">, "p
 
       <ProductView
         product={product}
-        orderingEnabled={features.ordering}
         showSampleLabel={showSampleLabels()}
         whatsapp={normaliseIndianMobile(contact.whatsapp)}
       />

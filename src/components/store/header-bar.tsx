@@ -9,12 +9,15 @@ import { ChevronDownIcon, MenuIcon, SearchIcon } from "@/components/ui/icons";
 import { duration, ease } from "@/lib/motion";
 import { cn } from "@/lib/utils/cn";
 import { CatalogImage } from "./catalog-image";
+import { BagButton, WishlistLink } from "./bag/bag-drawer";
 import { SearchOverlay } from "./search-overlay";
 
 export type HeaderNav = {
   categories: Array<{ slug: string; name: string }>;
   collections: Array<{ slug: string; name: string; cover: string | null }>;
   showAbout: boolean;
+  bag: boolean;
+  wishlist: boolean;
 };
 
 const navLink =
@@ -190,10 +193,16 @@ export function HeaderBar({ nav }: { nav: HeaderNav }) {
             onClick={() => setSearchOpen(true)}
             aria-label="Search"
             aria-keyshortcuts="/ Control+K Meta+K"
-            className="-mr-2 flex size-11 items-center justify-center"
+            className={cn("flex size-11 items-center justify-center", !nav.bag && "-mr-2")}
           >
             <SearchIcon />
           </button>
+          {nav.wishlist && <WishlistLink />}
+          {nav.bag && (
+            <div className="-mr-2">
+              <BagButton />
+            </div>
+          )}
         </div>
       </div>
 

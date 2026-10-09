@@ -73,6 +73,8 @@ export const settingsSchemas = {
   }),
   social: z.object({ instagram: z.string(), pinterest: z.string() }),
   shipping: z.object({
+    /** Until the owner confirms rates, shoppers see "calculated at checkout", never a guessed price */
+    ratesConfirmed: z.boolean(),
     /** Flat charge per order, in paise, when below the free threshold */
     flatRate: paise,
     /** null = no free-shipping threshold */
@@ -114,7 +116,13 @@ export const settingDefaults: { [K in SettingKey]: SettingValue<K> } = {
     grievanceOfficer: { name: "", email: "", designation: "Grievance Officer" },
   },
   social: { instagram: "", pinterest: "" },
-  shipping: { flatRate: 0, freeAbove: null, expressRate: null, chargesGstRateBp: 1800 },
+  shipping: {
+    ratesConfirmed: false,
+    flatRate: 0,
+    freeAbove: null,
+    expressRate: null,
+    chargesGstRateBp: 1800,
+  },
   cod: { enabled: false, maxOrderTotal: 0, fee: 0 },
   gifting: { wrapEnabled: false, wrapPrice: 0 },
   checkout: { reservationMinutes: 15 },

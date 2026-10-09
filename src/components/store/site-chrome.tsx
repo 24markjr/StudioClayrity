@@ -5,6 +5,7 @@ import { WhatsAppIcon } from "@/components/ui/icons";
 import { getNavigation, getPageLinks, getStoreSetting } from "@/lib/catalog/data";
 import { POLICY_PAGES } from "@/lib/content/pages";
 import { normaliseIndianMobile } from "@/lib/domain/india";
+import { features } from "@/lib/features";
 import { AnnouncementBar } from "./announcement-bar";
 import { NewsletterForm } from "./forms";
 import { HeaderBar } from "./header-bar";
@@ -26,6 +27,8 @@ export async function SiteHeader() {
             categories: nav.categories,
             collections: nav.collections.map((c) => ({ slug: c.slug, name: c.name, cover: c.cover })),
             showAbout: pages.some((p) => p.slug === "about"),
+            bag: features.bag,
+            wishlist: features.wishlist,
           }}
         />
       </header>
